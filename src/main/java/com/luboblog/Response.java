@@ -1,4 +1,4 @@
-package com.serverless;
+package com.luboblog;
 
 import java.util.Map;
 

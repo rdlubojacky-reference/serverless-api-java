@@ -23,6 +23,12 @@ provider:
   name: aws
   runtime: java8
 
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:*"
+      Resource: "*"
+
 # you can overwrite defaults here
 #  stage: dev
 #  region: us-east-1
@@ -49,11 +55,21 @@ provider:
 
 # you can add packaging information here
 package:
-  artifact: build/distributions/hello.zip
+  artifact: build/distributions/${self:service}-${self:provider.stage}.jar
 
 functions:
-  hello:
-    handler: com.serverless.Handler
+  listUsers:
+    handler: com.luboblog.ListUsersHandler
+
+  getUser:
+    handler: com.luboblog.GetUserHandler
+
+  createUser:
+    handler: com.luboblog.CreateUserHandler
+
+  deleteUser:
+    handler: com.luboblog.DeleteUserHandler
+
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
@@ -95,13 +111,22 @@ functions:
 #      variable2: value2
 
 # you can add CloudFormation resource templates here
-#resources:
-#  Resources:
-#    NewResource:
-#      Type: AWS::S3::Bucket
-#      Properties:
-#        BucketName: my-new-bucket
-#  Outputs:
-#     NewOutput:
-#       Description: "Description for the output"
-#       Value: "Some output value"
+resources:
+  Resources:
+    usersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: users_table
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: first_name
+            AttributeType: S
+          - AttributeNmae: last_name
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1

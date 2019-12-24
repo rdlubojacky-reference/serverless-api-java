@@ -10,6 +10,7 @@ targetCompatibility = 1.8
 dependencies {
     compile (
         'com.amazonaws:aws-lambda-java-core:1.1.0',
+        'com.amazonaws:aws-java-sdk-dynamodb:1.11.698',
         'com.amazonaws:aws-lambda-java-log4j:1.0.0',
         'com.fasterxml.jackson.core:jackson-core:2.8.5',
         'com.fasterxml.jackson.core:jackson-databind:2.8.5',
@@ -27,7 +28,7 @@ task buildZip(type: Zip) {
     // Link: https://docs.gradle.org/current/dsl/org.gradle.api.tasks.bundling.Zip.html
 
     // set the base name of the zip file
-    baseName = "hello"
+    baseName = "serverless-api-java"
     from compileJava
     from processResources
     into('lib') {
