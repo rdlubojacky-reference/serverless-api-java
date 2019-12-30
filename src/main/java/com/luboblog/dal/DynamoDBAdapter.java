@@ -25,6 +25,10 @@ public class DynamoDBAdapter {
         return db_adapter;
     }
 
+    public AmazonDynamoDB getDbClient() {
+        return this.client;
+    }
+
     public DynamoDBMapper createDbMapper(DynamoDBMapperConfig mapperConfig) {
         if (this.client != null) {
             mapper = new DynamoDBMapper(this.client, mapperConfig);

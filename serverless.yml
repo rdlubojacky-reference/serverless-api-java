@@ -60,15 +60,31 @@ package:
 functions:
   listUsers:
     handler: com.luboblog.ListUsersHandler
+    events:
+      - http:
+          path: /products
+          method: get
 
   getUser:
     handler: com.luboblog.GetUserHandler
+    events:
+      - http:
+          path: /products/{id}
+          method: get
 
   createUser:
     handler: com.luboblog.CreateUserHandler
+    events:
+      - http:
+          path: /products
+          method: post
 
   deleteUser:
     handler: com.luboblog.DeleteUserHandler
+    events:
+      - http:
+          path: /products/{id}
+          method: delete
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
