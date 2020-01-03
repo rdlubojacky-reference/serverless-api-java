@@ -19,15 +19,27 @@ service: users-api
 # Check out our docs for more details
 # frameworkVersion: "=X.X.X"
 
+custom:
+  usersTableName: 'java-users-${self:provider.stage}'
+
 provider:
   name: aws
   runtime: java8
-
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-1'}
   iamRoleStatements:
-    - Effect: "Allow"
+    - Effect: Allow
       Action:
-        - "dynamodb:*"
-      Resource: "*"
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - { "Fn::GetAtt": ["UsersDynamoDBTable", "Arn" ] }
+  environment:
+    USERS_TABLE_NAME: ${self:custom.usersTableName}
 
 # you can overwrite defaults here
 #  stage: dev
@@ -55,35 +67,35 @@ provider:
 
 # you can add packaging information here
 package:
-  artifact: build/distributions/${self:service}-${self:provider.stage}.jar
+  artifact: build/distributions/${self:service}-${self:provider.stage}.zip
 
 functions:
   listUsers:
     handler: com.luboblog.ListUsersHandler
     events:
       - http:
-          path: /products
+          path: /users
           method: get
 
   getUser:
     handler: com.luboblog.GetUserHandler
     events:
       - http:
-          path: /products/{id}
+          path: /users/{id}
           method: get
 
   createUser:
     handler: com.luboblog.CreateUserHandler
     events:
       - http:
-          path: /products
+          path: /users
           method: post
 
   deleteUser:
     handler: com.luboblog.DeleteUserHandler
     events:
       - http:
-          path: /products/{id}
+          path: /users/{id}
           method: delete
 
 #    The following are a few example events you can configure
@@ -129,16 +141,12 @@ functions:
 # you can add CloudFormation resource templates here
 resources:
   Resources:
-    usersTable:
+    UsersDynamoDBTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: users_table
+        TableName: ${self:custom.usersTableName}
         AttributeDefinitions:
           - AttributeName: id
-            AttributeType: S
-          - AttributeName: first_name
-            AttributeType: S
-          - AttributeNmae: last_name
             AttributeType: S
         KeySchema:
           - AttributeName: id

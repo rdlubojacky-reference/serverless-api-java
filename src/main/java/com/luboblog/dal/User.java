@@ -1,6 +1,7 @@
 package com.luboblog.dal;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class User {
     private String id;
     private String firstName;
     private String lastName;
+    private Date createDate;
 
     private DynamoDBAdapter db_adapter;
     private AmazonDynamoDB client;
@@ -51,7 +53,7 @@ public class User {
         this.id = id;
     }
 
-    @DynamoDBAttribute(attributeName = "first_name")
+    @DynamoDBAttribute(attributeName = "firstName")
     public String getFirstName() {
         return this.firstName;
     }
@@ -60,13 +62,22 @@ public class User {
         this.firstName = firstName;
     }
 
-    @DynamoDBAttribute(attributeName = "last_name")
+    @DynamoDBAttribute(attributeName = "lastName")
     public String getLastName() {
         return this.lastName;
     }
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    @DynamoDBAttribute(attributeName = "createDate")
+    public Date getCreateDate() {
+        return this.createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
     }
 
     public List<User> list() throws IOException {
