@@ -18,10 +18,10 @@ public class ListUsersHandler implements RequestHandler<Map<String, Object>, Api
 	public ApiGatewayResponse handleRequest(Map<String, Object> input, Context context) {
 		try {
 			// get all products
-			List<User> products = new User().list();
+			List<User> users = new User().list();
 
 			// send the response back
-			return ApiGatewayResponse.builder().setStatusCode(200).setObjectBody(products)
+			return ApiGatewayResponse.builder().setStatusCode(200).setObjectBody(users)
 					.setHeaders(Collections.singletonMap("X-Powered-By", "AWS Lambda & Serverless")).build();
 		} catch (Exception ex) {
 			logger.error("Error in listing users: " + ex);
