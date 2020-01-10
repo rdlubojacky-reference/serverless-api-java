@@ -1,6 +1,7 @@
 package com.luboblog;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -13,8 +14,18 @@ public class GetUserHandler implements RequestHandler<Map<String, Object>, ApiGa
 
 	private static final Logger logger = Logger.getLogger(GetUserHandler.class);
 
+	private User user;
+
+	public GetUserHandler(User user) {
+		this.user = user;
+	}
+
 	@Override
 	public ApiGatewayResponse handleRequest(Map<String, Object> input, Context context) {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("X-Powered-By", "AWS Lambda & Serverless");
+		map.put("Access-Control-Allow-Origin", "*");
+		map.put("Access-Control-Allow-Credentials", "true");
 
 		try {
 			// get the 'pathParameters' from input
@@ -22,16 +33,16 @@ public class GetUserHandler implements RequestHandler<Map<String, Object>, ApiGa
 			String userId = pathParameters.get("id");
 
 			// get the Product by id
-			User user = new User().get(userId);
+			User user = this.user.get(userId);
 
 			// send the response back
 			if (user != null) {
 				return ApiGatewayResponse.builder().setStatusCode(200).setObjectBody(user)
-						.setHeaders(Collections.singletonMap("X-Powered-By", "AWS Lambda & Serverless")).build();
+						.setHeaders(map).build();
 			} else {
 				return ApiGatewayResponse.builder().setStatusCode(404)
 						.setObjectBody("User with id: '" + userId + "' not found.")
-						.setHeaders(Collections.singletonMap("X-Powered-By", "AWS Lambda & Serverless")).build();
+						.setHeaders(map).build();
 			}
 		} catch (Exception ex) {
 			logger.error("Error in listing users: " + ex);
@@ -40,7 +51,7 @@ public class GetUserHandler implements RequestHandler<Map<String, Object>, ApiGa
 			Response responseBody = new Response("Error in listing user: ", input);
 
 			return ApiGatewayResponse.builder().setStatusCode(500).setObjectBody(responseBody)
-					.setHeaders(Collections.singletonMap("X-Powered-By", "AWS Lambda & Serverless")).build();
+					.setHeaders(map).build();
 		}
 	}
 }

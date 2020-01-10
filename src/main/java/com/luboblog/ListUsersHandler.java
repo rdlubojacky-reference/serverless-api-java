@@ -1,6 +1,7 @@
 package com.luboblog;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,13 +17,18 @@ public class ListUsersHandler implements RequestHandler<Map<String, Object>, Api
 
 	@Override
 	public ApiGatewayResponse handleRequest(Map<String, Object> input, Context context) {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("X-Powered-By", "AWS Lambda & Serverless");
+		map.put("Access-Control-Allow-Origin", "*");
+		map.put("Access-Control-Allow-Credentials", "true");
+
 		try {
 			// get all products
 			List<User> users = new User().list();
 
 			// send the response back
 			return ApiGatewayResponse.builder().setStatusCode(200).setObjectBody(users)
-					.setHeaders(Collections.singletonMap("X-Powered-By", "AWS Lambda & Serverless")).build();
+					.setHeaders(map).build();
 		} catch (Exception ex) {
 			logger.error("Error in listing users: " + ex);
 
@@ -30,7 +36,7 @@ public class ListUsersHandler implements RequestHandler<Map<String, Object>, Api
 			Response responseBody = new Response("Error in listing user: ", input);
 
 			return ApiGatewayResponse.builder().setStatusCode(500).setObjectBody(responseBody)
-					.setHeaders(Collections.singletonMap("X-Powered-By", "AWS Lambda & Serverless")).build();
+					.setHeaders(map).build();
 		}
 	}
 }

@@ -3,7 +3,7 @@ Boilerplate framework code for serverless api implementations
 
 ## Task List
 - [x] Create gradle scaffolding
-- [ ] Define use case (i.e., post, get, delete user)
+- [x] Define use case (i.e., post, get, delete user)
 - [ ] Create exception framework
 - [ ] Create logging framework
 - [ ] Create caching framework (i.e., get products)

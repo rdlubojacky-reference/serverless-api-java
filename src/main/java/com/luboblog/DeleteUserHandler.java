@@ -1,6 +1,7 @@
 package com.luboblog;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -24,14 +25,19 @@ public class DeleteUserHandler implements RequestHandler<Map<String, Object>, Ap
 			// get the Product by id
 			Boolean success = new User().delete(userId);
 
+			Map<String, String> map = new HashMap<String, String>();
+			map.put("X-Powered-By", "AWS Lambda & Serverless");
+			map.put("Access-Control-Allow-Origin", "*");
+			map.put("Access-Control-Allow-Credentials", "true");
+
 			// send the response back
 			if (success) {
 				return ApiGatewayResponse.builder().setStatusCode(204)
-						.setHeaders(Collections.singletonMap("X-Powered-By", "AWS Lambda & Serverless")).build();
+						.setHeaders(map).build();
 			} else {
 				return ApiGatewayResponse.builder().setStatusCode(404)
 						.setObjectBody("User with id: '" + userId + "' not found.")
-						.setHeaders(Collections.singletonMap("X-Powered-By", "AWS Lambda & Serverless")).build();
+						.setHeaders(map).build();
 			}
 		} catch (Exception ex) {
 			logger.error("Error in listing users: " + ex);
